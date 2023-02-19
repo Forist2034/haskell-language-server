@@ -445,7 +445,7 @@ expandFiles = concatMapM $ \x -> do
             let recurse "." = True
                 recurse x | "." `isPrefixOf` takeFileName x = False -- skip .git etc
                 recurse x = takeFileName x `notElem` ["dist", "dist-newstyle"] -- cabal directories
-            files <- filter (\x -> takeExtension x `elem` [".hs", ".lhs"]) <$> IO.listFilesInside (return . recurse) x
+            files <- filter (\x -> takeExtension x `elem` [".hs", ".hsig", ".lhs"]) <$> IO.listFilesInside (return . recurse) x
             when (null files) $
                 fail $ "Couldn't find any .hs/.lhs files inside directory: " ++ x
             return files

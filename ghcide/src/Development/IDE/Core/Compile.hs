@@ -1185,7 +1185,7 @@ getModSummaryFromImports env fp modTime contents = do
         else mkHomeModLocation dflags mod fp
 
     let modl = mkHomeModule (hscHomeUnit env) mod
-        sourceType = if "-boot" `isSuffixOf` takeExtension fp then HsBootFile else HsSrcFile
+        sourceType = if "-boot" `isSuffixOf` takeExtension fp then HsBootFile else if ".hsig" `isExtensionOf` fp then HsigFile else HsSrcFile
         msrModSummary2 =
             ModSummary
                 { ms_mod          = modl
@@ -1283,7 +1283,8 @@ parseFileContents env customPreprocessor filename ms = do
    let loc  = mkRealSrcLoc (Util.mkFastString filename) 1 1
        dflags = ms_hspp_opts ms
        contents = fromJust $ ms_hspp_buf ms
-   case unP Compat.parseModule (initParserState (initParserOpts dflags) contents loc) of
+       parser = if ms_hsc_src ms == HsigFile then Compat.parseSignature else Compat.parseModule
+   case unP parser (initParserState (initParserOpts dflags) contents loc) of
      PFailedWithErrorMessages msgs -> throwE $ diagFromErrMsgs "parser" dflags $ msgs dflags
      POk pst rdr_module ->
          let

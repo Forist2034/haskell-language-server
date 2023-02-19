@@ -799,7 +799,7 @@ defaultPluginDescriptor plId =
     mempty
     mempty
     Nothing
-    [".hs", ".lhs", ".hs-boot"]
+    [".hs", ".hsig", ".lhs", ".hs-boot"]
 
 -- | Set up a plugin descriptor, initialized with default values.
 -- This is plugin descriptor is prepared for @.cabal@ files and as such,
